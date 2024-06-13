@@ -6,7 +6,8 @@ const { CleanWebpackPlugin } = require("clean-webpack-plugin");
 const workboxPlugin = require("workbox-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
-const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
+// const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const path = require("path");
 DotEnv.config({ path: ".env.prod" });
 const baseConfig = require("./base.config.js");
@@ -35,7 +36,8 @@ module.exports = merge(baseConfig, {
       },
     },
     minimizer: [
-      new OptimizeCSSAssetsPlugin({}),
+      // new OptimizeCSSAssetsPlugin({}),
+      new CssMinimizerPlugin()
       // in case you got a minified error #307, just remove uglify js
       // problems may occur when using react hooks
       // new UglifyJsPlugin()

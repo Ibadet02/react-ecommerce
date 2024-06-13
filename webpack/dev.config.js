@@ -13,7 +13,7 @@ module.exports = merge(baseConfig, {
   mode: "development",
   devtool: "inline-source-map",
   devServer: {
-    contentBase: false,
+    contentBase: path.resolve(__dirname, "../dist"),
     publicPath: "/",
     historyApiFallback: true,
     clientLogLevel: "warning",

@@ -1,94 +1,61 @@
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const path = require("path");
+import MiniCssExtractPlugin, { loader as _loader } from 'mini-css-extract-plugin';
+import { join } from "path";
 
-const resolve = (dir) => {
-  return path.join(__dirname, "..", dir);
+// Function to resolve paths
+function resolvePath(dir) {
+  return join(__dirname, dir); // Adjusted based on your project structure
+}
+
+export const entry = {
+  main: ["@babel/polyfill", resolvePath("./src/index.jsx")],
 };
-
-module.exports = {
-  entry: ["@babel/polyfill", resolve("src/index.jsx")],
-  output: {
-    path: resolve("dist"),
-    filename: "js/[name].bundle.js",
-    publicPath: "/",
-  },
-  module: {
-    rules: [
-      {
-        test: /\.(js|jsx)$/,
-        exclude: /node_modules/,
-        use: {
-          loader: "babel-loader",
-        },
-      },
-      {
-        test: /\.(sa|sc|c)ss$/,
-        use: [
-          {
-            loader: MiniCssExtractPlugin.loader,
-          },
-          {
-            loader: "css-loader",
-            options: {
-              sourceMap: true,
-            },
-          },
-          {
-            loader: "group-css-media-queries-loader",
-          },
-          {
-            loader: "sass-loader",
-            options: {
-              sourceMap: true,
-            },
-          },
-        ],
-      },
-      {
-        test: /\.(png|svg|jpg|jpeg|gif)$/,
-        use: [
-          {
-            loader: "file-loader",
-            options: {
-              limit: 10000,
-              outputPath: "images",
-              name: "[name].[hash].[ext]",
-            },
-          },
-        ],
-      },
-      {
-        test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/,
-        loader: "file-loader",
+export const output = {
+  path: resolvePath("dist"),
+  filename: "js/[name].bundle.js",
+  publicPath: "/",
+};
+export const module = {
+  rules: [
+    {
+      test: /\.(js|jsx)$/,
+      exclude: /node_modules/,
+      use: {
+        loader: "babel-loader",
         options: {
-          limit: 10000,
-          name: "[name].[hash].[ext]",
-          outputPath: "media",
+          presets: ["@babel/preset-env", "@babel/preset-react"], // Example presets
         },
       },
-      {
-        test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
-        use: [
-          {
-            loader: "file-loader",
-            options: {
-              limit: 10000,
-              name: "[name].[hash].[ext]",
-              outputPath: "fonts",
-            },
+    },
+    {
+      test: /\.(sa|sc|c)ss$/,
+      use: [
+        _loader,
+        "css-loader",
+        "sass-loader",
+      ],
+    },
+    {
+      test: /\.(png|svg|jpg|jpeg|gif)$/,
+      use: [
+        {
+          loader: "file-loader",
+          options: {
+            limit: 10000,
+            outputPath: "images",
+            name: "[name].[hash].[ext]",
           },
-        ],
-      },
-    ],
-  },
-  resolve: {
-    modules: [resolve("src"), "node_modules"],
-    extensions: ["*", ".js", ".jsx"],
-  },
-  plugins: [
-    new MiniCssExtractPlugin({
-      filename: "[name].css",
-      chunkFilename: "[name].[contenthash]_[id].css",
-    }),
+        },
+      ],
+    },
   ],
 };
+export const resolve = {
+  extensions: [".js", ".jsx"], // Ensure JSX files are resolved correctly
+  modules: [resolvePath("src"), "node_modules"],
+};
+export const plugins = [
+  new MiniCssExtractPlugin({
+    filename: "css/[name].css",
+    chunkFilename: "css/[name].[contenthash]_[id].css",
+  }),
+];
